@@ -6,38 +6,55 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LoginModal: View {
+        
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
     @Binding var appState: AppState
     
-    @State private var email: String = ""
-    @State private var senha: String = ""
-        
-    private var canContinue: Bool {
-        !email.isEmpty && !senha.isEmpty
-    }
+    @ObservedObject var viewModel = LoginViewModel()
     
     var body: some View {
         VStack(alignment: .center, spacing: 32) {
-            Text("Bem-vindo de volta!")
+            Text("Junte-se a nós!")
                 .font(.title.bold())
             
             VStack() {
                 Form {
                     Section {
-                        TextField("",
-                                  text: $email,
-                                  prompt: Text("Insira seu e-mail")
+                        VStack {
+                            TextField("",
+                                      text: $viewModel.email,
+                                      prompt: Text("Insira seu e-mail")
+                                .font(.body)
+                                .foregroundStyle(.gray)
+                            )
+                            .padding(12)
+                            .foregroundStyle(.black)
+                            .background(.white)
                             .font(.body)
-                            .foregroundStyle(.gray)
-                        )
-                        .padding(12)
-                        .background(.white)
-                        .foregroundStyle(.black)
-                        .font(.body)
-                        .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        viewModel.isEmailInvalid ? .red : .clear,
+                                        lineWidth: 1
+                                    )
+                            }
+                            .textContentType(.password)
+                            
+                            if viewModel.isEmailInvalid {
+                                HStack {
+                                    Image(systemName: "exclamationmark.triangle")
+                                    Text("Formato de e-mail inválido. Tente novamente")
+                                }
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
                     } header: {
                         Text("E-mail")
                             .font(.headline.bold())
@@ -50,7 +67,7 @@ struct LoginModal: View {
                     Section {
                         VStack {
                             SecureField("",
-                                        text: $senha,
+                                        text: $viewModel.password,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
                                 .foregroundStyle(.gray)
@@ -59,59 +76,104 @@ struct LoginModal: View {
                             .foregroundStyle(.black)
                             .background(.white)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        viewModel.isPasswordInvalid ? .red : .clear,
+                                        lineWidth: 1
+                                    )
+                            }
                             .textContentType(.password)
+                            
+                            if viewModel.isPasswordInvalid {
+                                HStack {
+                                    Image(systemName: "exclamationmark.triangle")
+                                    Text(viewModel.isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
+                                }
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            
                         }
                     } header: {
                         Text("Senha")
                             .font(.headline.bold())
                             .foregroundStyle(.white)
                     }
+                    
+//                    Spacer()
+//                        .frame(height: 24)
+                    
+                    if viewModel.isUserUnregistered {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle")
+                            Text("Usuário não encontrado. Tente novamente")
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
                 }
                 .formStyle(.columns)
             }
             
             Button(action: {
+                // Passar essa lógica pro viewmodel
                 withAnimation {
-                    isPresentingLogin = false
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    withAnimation(.easeInOut) {
-                        appState = .navegacao
+                    if !viewModel.isValidEmail(viewModel.email) {
+                        viewModel.isEmailInvalid = true
+                    } else if !viewModel.isValidPassword(viewModel.password) {
+                        viewModel.isPasswordInvalid = true
+                    } else {
+                        viewModel.isEmailInvalid = false
+                        viewModel.isPasswordInvalid = false
+                        isPresentingCadastro = false
+                        
+                        guard let user = viewModel.findUserByEmail(viewModel.email) else {
+                            viewModel.isUserUnregistered = true
+                            return
+                        }
+                        
+                        // jogar o user no enviroment?
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation(.easeInOut) {
+                                appState = .navegacao
+                            }
+                        }
                     }
                 }
                 
             }) {
-                Text("Login")
+                Text("Entre no CineFilés")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(
-                        .white
-                    )
+                    .foregroundStyle(.white)
                     .background(
-                        canContinue ? .blue : .gray
+                        viewModel.canContinue ? .blue : .gray
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .clipShape(.buttonBorder)
             }
-            .disabled(!canContinue)
+            .disabled(!viewModel.canContinue)
             
             HStack (spacing: 4) {
-                Text("Não tem uma conta?")
+                Text("Não possui uma conta?")
                 
                 Button {
                     withAnimation {
                         isPresentingLogin = false
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         withAnimation(.easeInOut) {
                             isPresentingCadastro = true
                         }
                     }
                 } label: {
                     Text("Crie agora")
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(.red)
                         .fontWeight(.semibold)
                 }
             }
@@ -121,4 +183,5 @@ struct LoginModal: View {
         .padding(.horizontal, 24)
         .padding(.vertical, 32)
     }
+
 }
