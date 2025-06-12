@@ -17,6 +17,15 @@ struct PokemonDetailsView: View {
             
             if let pokemon = viewModel.pokemon {
                 
+                var isFavorite = viewModel.isPokemonFavorite(with: pokemon.id)
+                Button {
+                    isFavorite ? viewModel.removeSavedPokemon(pokemon.id) : viewModel.savePokemon(pokemon: pokemon)
+                    isFavorite = viewModel.isPokemonFavorite(with: pokemon.id)
+                } label: {
+                    Image(systemName: isFavorite ? "heart.fill" : "heart")
+                        .foregroundStyle(.red)
+                }
+                
                 VStack(spacing: 10) {
                     Text("#0\(pokemon.id)")
                         .font(.subheadline)
@@ -123,7 +132,7 @@ struct PokemonDetailsView: View {
             Spacer()
         }
         .task {
-            await viewModel.getPokemon(url)
+            await viewModel.fetchPokemon(url)
         }
         .padding(.top, 16)
         .padding(.horizontal, 32)
