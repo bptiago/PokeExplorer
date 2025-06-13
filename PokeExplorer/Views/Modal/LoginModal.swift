@@ -10,12 +10,12 @@ import SwiftData
 
 struct LoginModal: View {
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var appInfo: AppInfo
         
     @Query private var usuarios: [Usuario]
     
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
-    @Binding var appState: AppState
     
     @ObservedObject var viewModel = LoginViewModel()
     
@@ -132,16 +132,15 @@ struct LoginModal: View {
                         viewModel.isPasswordInvalid = false
                         isPresentingCadastro = false
                         
-                        guard let user = findUser(email: viewModel.email, password: viewModel.password) else {
+                        guard let user = findUser(email: viewModel.email.lowercased(), password: viewModel.password) else {
                             viewModel.isUserUnregistered = true
                             return
                         }
                         
-                        // jogar o user no enviroment?
-                        
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             withAnimation(.easeInOut) {
-                                appState = .navegacao
+                                appInfo.loggedUser = user
+                                appInfo.appState = .navegacao
                             }
                         }
                     }

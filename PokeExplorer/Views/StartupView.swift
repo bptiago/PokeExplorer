@@ -7,9 +7,7 @@
 
 import SwiftUI
 
-struct StartupView: View {
-    @Binding var appState: AppState;
-        
+struct StartupView: View {        
     @State private var isPresentingLogin = false
     @State private var isPresentingCadastro = false
     
@@ -53,8 +51,7 @@ struct StartupView: View {
             .sheet(isPresented: $isPresentingLogin) {
                 LoginModal(
                     isPresentingLogin: $isPresentingLogin,
-                    isPresentingCadastro: $isPresentingCadastro,
-                    appState: $appState
+                    isPresentingCadastro: $isPresentingCadastro
                 )
                     .presentationDetents([
                         .height(500)
@@ -66,8 +63,7 @@ struct StartupView: View {
             .sheet(isPresented: $isPresentingCadastro, content: {
                 CadastroModal(
                     isPresentingLogin: $isPresentingLogin,
-                    isPresentingCadastro: $isPresentingCadastro,
-                    appState: $appState
+                    isPresentingCadastro: $isPresentingCadastro
                 )
                     .presentationDetents([
                         .height(700)

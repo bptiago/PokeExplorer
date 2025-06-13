@@ -18,7 +18,6 @@ struct CadastroModal: View {
     
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
-    @Binding var appState: AppState
     
     var body: some View {
         VStack(alignment: .center, spacing: 32) {
@@ -211,7 +210,7 @@ struct CadastroModal: View {
                         viewModel.isPasswordsDifferent = false
                         isPresentingCadastro = false
                                                 
-                        let user = Usuario(username: viewModel.username, email: viewModel.email, senha: viewModel.password)
+                        let user = Usuario(username: viewModel.username, email: viewModel.email.lowercased(), senha: viewModel.password)
                         modelContext.insert(user)
                                                 
                         isPresentingLogin = true
