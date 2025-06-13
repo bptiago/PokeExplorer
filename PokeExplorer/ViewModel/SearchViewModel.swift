@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ListViewModel: ObservableObject {
+class SearchViewModel: ObservableObject {
     @Published var pokemons: [ListedPokemon] = []
     @Published var searchText: String = ""
     
@@ -23,8 +23,9 @@ class ListViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decoder = JSONDecoder()
             let response = try decoder.decode(ListedPokemonResponse.self, from: data)
-            
-            pokemons = response.results
+            DispatchQueue.main.async {
+                self.pokemons = response.results
+            }
             
         } catch {
             print("Error: \(error.localizedDescription)")

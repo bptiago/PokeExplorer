@@ -6,9 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PokemonDetailsView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favorites: [Favorito]
+    
     @StateObject var viewModel = PokemonDetailsViewModel()
+    @State private var isFavorite = false
     
     var url: String
     
@@ -17,10 +22,9 @@ struct PokemonDetailsView: View {
             
             if let pokemon = viewModel.pokemon {
                 
-                var isFavorite = viewModel.isPokemonFavorite(with: pokemon.id)
                 Button {
-                    isFavorite ? viewModel.removeSavedPokemon(pokemon.id) : viewModel.savePokemon(pokemon: pokemon)
-                    isFavorite = viewModel.isPokemonFavorite(with: pokemon.id)
+                    isFavorite ? removeSavedPokemon(pokemon.id) : savePokemon(pokemon: pokemon)
+                    isFavorite.toggle()
                 } label: {
                     Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .foregroundStyle(.red)
@@ -45,7 +49,6 @@ struct PokemonDetailsView: View {
                 } placeholder: {
                     ProgressView()
                 }
-
                 
                 HStack (alignment: .center) {
                     VStack (spacing: 8) {
@@ -117,7 +120,7 @@ struct PokemonDetailsView: View {
                     Text("Abilities")
                         .foregroundStyle(.secondary)
                         .frame(width: 100, alignment: .leading)
-
+                    
                     
                     Text(
                         pokemon.abilities.prefix(5).map { $0.ability.name.capitalized }.joined(separator: ", "))
@@ -134,11 +137,37 @@ struct PokemonDetailsView: View {
         .task {
             await viewModel.fetchPokemon(url)
         }
+        
+        .onChange(of: viewModel.pokemon, { _, newValue in
+            if let newValue {
+                isFavorite = isPokemonFavorite(with: newValue.id)
+            }
+        })
+        
         .padding(.top, 16)
         .padding(.horizontal, 32)
         .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+    }
+    
+    func isPokemonFavorite(with id: Int) -> Bool {
+        let descriptor = FetchDescriptor<Favorito>(predicate: #Predicate { $0.id == id })
+        let entity = try? modelContext.fetch(descriptor).first
+        return entity != nil ? true : false
+    }
+    
+    func savePokemon(pokemon: PokemonResponse) {
+        let favorite = Favorito(id: pokemon.id, name: pokemon.name, url: url)
+        modelContext.insert(favorite)
+    }
+    
+    func removeSavedPokemon(_ id: Int) {
+        guard let favorite = favorites.filter({ $0.id == id }).first else {
+            return
+        }
+        modelContext.delete(favorite)
     }
 }
 

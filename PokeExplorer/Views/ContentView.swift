@@ -16,14 +16,14 @@ enum AppState {
 import SwiftUI
 
 struct ContentView: View {
-    @State private var appState: AppState = .navegacao
+    @State private var appState: AppState = .inicio
         
     var body: some View {
         switch appState {
         case .inicio:
             StartupView(appState: $appState)
         case .navegacao:
-            ListView()
+            NavigationView()
         }
     }
 }

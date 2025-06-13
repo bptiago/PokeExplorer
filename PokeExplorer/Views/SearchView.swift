@@ -6,10 +6,13 @@
 //
 
 import SwiftUI
+import SwiftData
 
-struct ListView: View {
+struct SearchView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var favorites: [Favorito]
     
-    @ObservedObject var viewModel = ListViewModel()
+    @ObservedObject var viewModel = SearchViewModel()
     
     let columns = [GridItem(.adaptive(minimum: 160), spacing: 18)]
     
@@ -51,11 +54,15 @@ struct ListView: View {
             }
             .padding()
             // Expandir a tela para que o usuário reconheça mais facilmente que há uma VGrid scrollabel
-            .ignoresSafeArea(.container, edges: .bottom)
+            .onAppear() {
+                for i in favorites {
+                    print(i.id)
+                }
+            }
         }
     }
 }
 
 #Preview {
-    ListView()
+    SearchView()
 }

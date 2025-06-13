@@ -6,36 +6,17 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
 
 class LoginViewModel: ObservableObject {
-    @Environment(\.modelContext) private var modelContext
-    
     @Published var email: String = ""
     @Published var password: String = ""
-    
     @Published var isEmailInvalid = false
     @Published var isPasswordInvalid = false
     @Published var isUserUnregistered = false
     
     var canContinue: Bool {
         !email.isEmpty && !password.isEmpty
-    }
-
-    func findUserByEmail(_ email: String) -> Usuario? {
-        let predicate = #Predicate<Usuario> { user in
-            user.email == email
-        }
-        var descriptor = FetchDescriptor<Usuario>(predicate: predicate)
-        descriptor.fetchLimit = 1
-        do {
-            let users = try modelContext.fetch(descriptor)
-            return users.first
-        } catch {
-            print("Error fetching user by email: \(error)")
-            return nil
-        }
     }
     
     func isValidEmail(_ email: String) -> Bool {
@@ -63,6 +44,5 @@ class LoginViewModel: ObservableObject {
         
         return true
     }
-    
-    
+
 }

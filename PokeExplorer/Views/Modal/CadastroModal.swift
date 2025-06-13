@@ -8,8 +8,11 @@
 // TODO: EMAIL JÁ EXISTE, COLORAÇÃO E UI
 
 import SwiftUI
+import SwiftData
 
 struct CadastroModal: View {
+    @Environment(\.modelContext) var modelContext
+    @Query private var users: [Usuario]
     
     @StateObject var viewModel = CadastroViewModel()
     
@@ -73,6 +76,7 @@ struct CadastroModal: View {
                                 .font(.body)
                                 .foregroundStyle(.gray)
                             )
+                            .textInputAutocapitalization(.never)
                             .padding(12)
                             .foregroundStyle(.black)
                             .background(.white)
@@ -206,15 +210,11 @@ struct CadastroModal: View {
                         viewModel.isPasswordInvalid = false
                         viewModel.isPasswordsDifferent = false
                         isPresentingCadastro = false
-                        
-                        // TRY/CATCH AQUI?
-                        viewModel.insertUser()
-                        
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//                            withAnimation(.easeInOut) {
-//                                appState = .navegacao
-//                            }
-//                        }
+                                                
+                        let user = Usuario(username: viewModel.username, email: viewModel.email, senha: viewModel.password)
+                        modelContext.insert(user)
+                                                
+                        isPresentingLogin = true
                     }
                 }
                 

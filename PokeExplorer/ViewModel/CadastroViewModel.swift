@@ -6,12 +6,9 @@
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
 
 class CadastroViewModel : ObservableObject {
-    @Environment(\.modelContext) var modelContext
-    
     @Published var username: String = ""
     @Published var email: String = ""
     @Published var password: String = ""
@@ -50,10 +47,5 @@ class CadastroViewModel : ObservableObject {
         }
         
         return true
-    }
-    
-    func insertUser() {
-        let user = Usuario(username: username, email: email, senha: password)
-        modelContext.insert(user)
     }
 }

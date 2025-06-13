@@ -9,7 +9,10 @@ import SwiftUI
 import SwiftData
 
 struct LoginModal: View {
+    @Environment(\.modelContext) private var modelContext
         
+    @Query private var usuarios: [Usuario]
+    
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
     @Binding var appState: AppState
@@ -31,6 +34,7 @@ struct LoginModal: View {
                                 .font(.body)
                                 .foregroundStyle(.gray)
                             )
+                            .textInputAutocapitalization(.never)
                             .padding(12)
                             .foregroundStyle(.black)
                             .background(.white)
@@ -103,9 +107,6 @@ struct LoginModal: View {
                             .foregroundStyle(.white)
                     }
                     
-//                    Spacer()
-//                        .frame(height: 24)
-                    
                     if viewModel.isUserUnregistered {
                         HStack {
                             Image(systemName: "exclamationmark.triangle")
@@ -131,7 +132,7 @@ struct LoginModal: View {
                         viewModel.isPasswordInvalid = false
                         isPresentingCadastro = false
                         
-                        guard let user = viewModel.findUserByEmail(viewModel.email) else {
+                        guard let user = findUser(email: viewModel.email, password: viewModel.password) else {
                             viewModel.isUserUnregistered = true
                             return
                         }
@@ -184,4 +185,18 @@ struct LoginModal: View {
         .padding(.vertical, 32)
     }
 
+    func findUser(email: String, password: String) -> Usuario? {
+        let predicate = #Predicate<Usuario> { user in
+            user.email == email && user.senha == password
+        }
+        var descriptor = FetchDescriptor<Usuario>(predicate: predicate)
+        descriptor.fetchLimit = 1
+        do {
+            let users = try modelContext.fetch(descriptor)
+            return users.first
+        } catch {
+            print("Error fetching user by email: \(error)")
+            return nil
+        }
+    }
 }

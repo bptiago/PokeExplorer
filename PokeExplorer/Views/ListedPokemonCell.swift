@@ -12,11 +12,15 @@ struct ListedPokemonCell: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Image("placeholder")
-                .resizable()
-                .aspectRatio(1, contentMode: .fit)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .padding(.bottom, 10)
+            
+            AsyncImage(url: URL(string: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/\(pokemon.id).png")) { image in
+                image.resizable()
+                    .resizable()
+                    .aspectRatio(1, contentMode: .fit)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+            } placeholder: {
+                ProgressView()
+            }
             
             Text(pokemon.name.capitalized)
                 .font(.body.bold())
@@ -24,11 +28,11 @@ struct ListedPokemonCell: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(1)
             
-            Text(pokemon.name.capitalized)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .lineLimit(1)
+//            Text(pokemon.id.formatted())
+//                .font(.subheadline)
+//                .foregroundColor(.secondary)
+//                .multilineTextAlignment(.center)
+//                .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
     }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct PokemonSprites: Decodable {
+struct PokemonSprites: Decodable, Equatable {
     let back_default: String?
     let back_female: String?
     let back_shiny: String?
@@ -19,37 +19,37 @@ struct PokemonSprites: Decodable {
     
 }
 
-struct PokemonTypeItem: Decodable {
+struct PokemonTypeItem: Decodable, Equatable{
     let name: String
     let url: String
 }
 
-struct PokemonType: Decodable {
+struct PokemonType: Decodable, Equatable {
     let slot: Int
     let type: PokemonTypeItem
 }
 
-struct PokemonMoveItem: Decodable {
+struct PokemonMoveItem: Decodable, Equatable {
     let name: String
     let url: String
 }
 
-struct PokemonMove: Decodable {
+struct PokemonMove: Decodable, Equatable {
     let move: PokemonMoveItem
 }
 
-struct PokemonAbilityItem: Decodable {
+struct PokemonAbilityItem: Decodable, Equatable {
     let name: String
     let url: String
 }
 
-struct PokemonAbility: Decodable {
+struct PokemonAbility: Decodable, Equatable {
     let is_hidden: Bool
     let slot: Int
     let ability: PokemonAbilityItem
 }
 
-struct PokemonResponse: Identifiable, Decodable {
+struct PokemonResponse: Identifiable, Decodable, Equatable {
     let id: Int
     let name: String
     let base_experience: Int

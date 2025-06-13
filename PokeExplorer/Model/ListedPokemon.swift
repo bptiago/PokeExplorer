@@ -12,6 +12,11 @@ import Foundation
 struct ListedPokemon: Decodable {
     let name: String
     let url: String
+    
+    var id: Int {
+        let n = url.split(separator: "/").last!
+        return Int(n)!
+    }
 }
 
 struct ListedPokemonResponse: Decodable {
