@@ -12,7 +12,7 @@ struct SearchView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var favorites: [Favorito]
     
-    @ObservedObject var viewModel = SearchViewModel()
+    @StateObject var viewModel = SearchViewModel()
     
     let columns = [GridItem(.adaptive(minimum: 160), spacing: 18)]
     
@@ -40,7 +40,7 @@ struct SearchView: View {
                     
                     Button {
                         Task {
-                            await viewModel.getPokemons()
+                            await viewModel.loadMorePokemons()
                         }
                     } label: {
                         Text("Carregar mais")

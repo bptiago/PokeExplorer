@@ -89,11 +89,6 @@ struct FavoritesView: View {
                     }
                 }
             }
-            .onAppear() {
-                for i in favorites {
-                    print(i.id)
-                }
-            }
         }
         .padding(.horizontal, MySpacings.big)
     }
