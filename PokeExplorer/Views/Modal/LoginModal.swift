@@ -20,9 +20,10 @@ struct LoginModal: View {
     @ObservedObject var viewModel = LoginViewModel()
     
     var body: some View {
-        VStack(alignment: .center, spacing: 32) {
+        VStack(alignment: .center, spacing: MySpacings.bigger) {
             Text("Junte-se a nós!")
                 .font(.title.bold())
+                .foregroundStyle(MyColors.primary)
             
             VStack() {
                 Form {
@@ -32,18 +33,18 @@ struct LoginModal: View {
                                       text: $viewModel.email,
                                       prompt: Text("Insira seu e-mail")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .textInputAutocapitalization(.never)
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isEmailInvalid ? .red : .clear,
+                                        viewModel.isEmailInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -55,14 +56,14 @@ struct LoginModal: View {
                                     Text("Formato de e-mail inválido. Tente novamente")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("E-mail")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -74,17 +75,17 @@ struct LoginModal: View {
                                         text: $viewModel.password,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isPasswordInvalid ? .red : .clear,
+                                        viewModel.isPasswordInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -96,7 +97,7 @@ struct LoginModal: View {
                                     Text(viewModel.isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             
@@ -104,7 +105,7 @@ struct LoginModal: View {
                     } header: {
                         Text("Senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     if viewModel.isUserUnregistered {
@@ -113,7 +114,7 @@ struct LoginModal: View {
                             Text("Usuário não encontrado. Tente novamente")
                         }
                         .font(.footnote)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(MyColors.warning)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
@@ -150,9 +151,9 @@ struct LoginModal: View {
                 Text("Entre no CineFilés")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(MyColors.primary)
                     .background(
-                        viewModel.canContinue ? .blue : .gray
+                        viewModel.canContinue ? MyColors.accent : MyColors.disabledButton
                     )
                     .clipShape(.buttonBorder)
             }
@@ -160,6 +161,7 @@ struct LoginModal: View {
             
             HStack (spacing: 4) {
                 Text("Não possui uma conta?")
+                    .foregroundStyle(MyColors.primary)
                 
                 Button {
                     withAnimation {
@@ -173,15 +175,15 @@ struct LoginModal: View {
                     }
                 } label: {
                     Text("Crie agora")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(MyColors.accent)
                         .fontWeight(.semibold)
                 }
             }
             .font(.subheadline)
             
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 32)
+        .padding(.horizontal, MySpacings.big)
+        .padding(.vertical, MySpacings.bigger)
     }
 
     func findUser(email: String, password: String) -> Usuario? {

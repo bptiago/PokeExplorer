@@ -17,8 +17,24 @@ struct PokemonDetailsView: View {
     
     var url: String
     
+    @Environment(\.dismiss) var dismiss
+        
+    var backButton: some View {
+        Button {
+            dismiss()
+        } label: {
+            Image(systemName: "chevron.left")
+                .font(.body.bold())
+                .foregroundStyle(MyColors.accent)
+                .padding()
+                .background(.ultraThinMaterial)
+                .clipShape(.circle)
+                .preferredColorScheme(.dark)
+        }
+    }
+    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: MySpacings.big) {
             
             if let pokemon = viewModel.pokemon {
                 
@@ -30,16 +46,17 @@ struct PokemonDetailsView: View {
                         .foregroundStyle(.red)
                 }
                 
-                VStack(spacing: 10) {
-                    Text("#0\(pokemon.id)")
-                        .font(.subheadline)
-                    
+                HStack(alignment: .center, spacing: 10) {
                     Text(pokemon.name.capitalized)
                         .font(.title)
                         .multilineTextAlignment(.center)
                         .fontWeight(.heavy)
+                        .foregroundStyle(MyColors.primary)
+                    
+                    Text("(#0\(pokemon.id))")
+                        .font(.subheadline)
+                        .foregroundStyle(MyColors.secondary)
                 }
-                .padding(.horizontal, 20)
                 
                 AsyncImage(url: URL(string: pokemon.sprites.front_default ?? "placeholder")) { image in
                     image.resizable()
@@ -51,31 +68,34 @@ struct PokemonDetailsView: View {
                 }
                 
                 HStack (alignment: .center) {
-                    VStack (spacing: 8) {
+                    VStack (spacing: MySpacings.small) {
                         Text(String(format: "%.1f", Float(pokemon.weight / 10)) + "kg")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .lineSpacing(5)
+                            .foregroundStyle(MyColors.primary)
                         
                         Text("Weight")
                             .textCase(.uppercase)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(MyColors.secondary)
                             .font(.body)
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
                     
                     Divider().frame(height: 50)
-                    
-                    VStack (spacing: 8) {
+                        .background(MyColors.primary)
+
+                    VStack (spacing: MySpacings.small) {
                         Text(pokemon.types.first?.type.name.capitalized ?? "Unknown")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .lineSpacing(5)
+                            .foregroundStyle(MyColors.primary)
                         
                         Text("Type")
                             .textCase(.uppercase)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(MyColors.secondary)
                             .font(.body)
                             .fontWeight(.semibold)
                     }
@@ -83,16 +103,18 @@ struct PokemonDetailsView: View {
                     
                     
                     Divider().frame(height: 50)
-                    
-                    VStack (spacing: 8) {
+                        .background(MyColors.primary)
+
+                    VStack (spacing: MySpacings.small) {
                         Text(String(format: "%.2f", Float(pokemon.height) / 100) + "m")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .lineSpacing(5)
+                            .foregroundStyle(MyColors.primary)
                         
                         Text("Height")
                             .textCase(.uppercase)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(MyColors.secondary)
                             .font(.body)
                             .fontWeight(.semibold)
                     }
@@ -101,16 +123,18 @@ struct PokemonDetailsView: View {
                 }
                 
                 Divider()
+                    .background(MyColors.primary)
                 
                 HStack(alignment: .top) {
                     Text("Moves")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(MyColors.secondary)
                         .frame(width: 100, alignment: .leading)
                     
                     Text(pokemon.moves.prefix(5).map {
                         $0.move.name.capitalized
                     }.joined(separator: ", ") + "...")
                     .lineLimit(2)
+                    .foregroundStyle(MyColors.primary)
                     
                     Spacer()
                     
@@ -118,13 +142,14 @@ struct PokemonDetailsView: View {
                 
                 HStack(alignment: .top) {
                     Text("Abilities")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(MyColors.secondary)
                         .frame(width: 100, alignment: .leading)
                     
                     
                     Text(
                         pokemon.abilities.prefix(5).map { $0.ability.name.capitalized }.joined(separator: ", "))
                     .lineLimit(2)
+                    .foregroundStyle(MyColors.primary)
                     
                     Spacer()
                 }
@@ -143,12 +168,11 @@ struct PokemonDetailsView: View {
                 isFavorite = isPokemonFavorite(with: newValue.id)
             }
         })
+        .padding(.horizontal, MySpacings.big)
         
-        .padding(.top, 16)
-        .padding(.horizontal, 32)
-        .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .navigationBarItems(leading: backButton)
+        
         .toolbar(.hidden, for: .tabBar)
     }
     

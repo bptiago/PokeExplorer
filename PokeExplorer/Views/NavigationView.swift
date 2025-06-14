@@ -18,13 +18,15 @@ struct NavigationView: View {
     
     var body: some View {
         TabView(selection: $selection) {
-            Tab("Search", systemImage: "magnifyingglass", value: .search) {
+            Tab("Buscar", systemImage: "magnifyingglass", value: .search) {
                 SearchView()
             }
-            Tab("Favorites", systemImage: "heart.fill", value: .favorites) {
+            Tab("Favoritos", systemImage: "heart.fill", value: .favorites) {
                 FavoritesView()
             }
         }
+        .tint(MyColors.accent)
+        .preferredColorScheme(.dark)
     }
 }
 

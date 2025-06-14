@@ -20,9 +20,10 @@ struct CadastroModal: View {
     @Binding var isPresentingCadastro: Bool
     
     var body: some View {
-        VStack(alignment: .center, spacing: 32) {
+        VStack(alignment: .center, spacing: MySpacings.bigger) {
             Text("Junte-se a nós!")
                 .font(.title.bold())
+                .foregroundStyle(MyColors.primary)
             
             VStack() {
                 Form {
@@ -32,17 +33,17 @@ struct CadastroModal: View {
                                       text: $viewModel.username,
                                       prompt: Text("Insira seu nome de usuário")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isUsernameInvalid ? .red : .clear,
+                                        viewModel.isUsernameInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -54,14 +55,14 @@ struct CadastroModal: View {
                                     Text("Nome de usuário precisa ter pelo menos 3 caracteres")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("Nome de usuário")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -73,18 +74,18 @@ struct CadastroModal: View {
                                       text: $viewModel.email,
                                       prompt: Text("Insira seu e-mail")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .textInputAutocapitalization(.never)
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isEmailInvalid ? .red : .clear,
+                                        viewModel.isEmailInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -96,14 +97,14 @@ struct CadastroModal: View {
                                     Text("Formato de e-mail inválido. Tente novamente")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("E-mail")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -115,17 +116,17 @@ struct CadastroModal: View {
                                         text: $viewModel.password,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isPasswordsDifferent ? .red : .clear,
+                                        viewModel.isPasswordsDifferent ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -137,7 +138,7 @@ struct CadastroModal: View {
                                     Text(viewModel.isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             
@@ -145,7 +146,7 @@ struct CadastroModal: View {
                     } header: {
                         Text("Senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -157,17 +158,17 @@ struct CadastroModal: View {
                                         text: $viewModel.confirmPassword,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
                             .clipShape(.buttonBorder)
                             .overlay {
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        viewModel.isPasswordsDifferent ? .red : .clear,
+                                        viewModel.isPasswordsDifferent ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
@@ -179,14 +180,14 @@ struct CadastroModal: View {
                                     Text("Senhas incompatíveis. Por favor, tente novamente.")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("Confirmar senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                 }
                 .formStyle(.columns)
@@ -221,9 +222,9 @@ struct CadastroModal: View {
                 Text("Entre no CineFilés")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(MyColors.primary)
                     .background(
-                        viewModel.canContinue ? .blue : .gray
+                        viewModel.canContinue ? MyColors.accent : MyColors.disabledButton
                     )
                     .clipShape(.buttonBorder)
             }
@@ -231,6 +232,7 @@ struct CadastroModal: View {
             
             HStack (spacing: 4) {
                 Text("Já tem uma conta?")
+                    .foregroundStyle(MyColors.primary)
                 
                 Button {
                     withAnimation {
@@ -244,14 +246,14 @@ struct CadastroModal: View {
                     }
                 } label: {
                     Text("Entre aqui")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(MyColors.accent)
                         .fontWeight(.semibold)
                 }
             }
             .font(.subheadline)
             
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 32)
+        .padding(.horizontal, MySpacings.big)
+        .padding(.vertical, MySpacings.bigger)
     }
 }

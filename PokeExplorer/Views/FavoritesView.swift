@@ -17,17 +17,18 @@ struct FavoritesView: View {
     
     var body: some View {
         NavigationStack {
-            VStack (alignment: .leading, spacing: 32) {
+            VStack (alignment: .leading, spacing: MySpacings.bigger) {
                 
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
                         Text("Hello, \(appInfo.loggedUser!.username.capitalized)!")
                             .font(.title)
                             .fontWeight(.bold)
+                            .foregroundStyle(MyColors.primary)
                         
                         Text(appInfo.loggedUser!.email)
                             .font(.headline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(MyColors.secondary)
                             .fontWeight(.light)
                     }
                     
@@ -39,29 +40,31 @@ struct FavoritesView: View {
                         }
                     } label: {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(MyColors.secondary)
                             .font(.headline)
                             .offset(y: 8)
                     }
                 }
                 
                 
-                Text("Aqui você vai encontrar todos os Pokemons que você marcou como favorito!")
+                Text("Aqui você vai encontrar todos os Pokémons que você marcou como favorito!")
                     .font(.body)
                     .fontWeight(.light)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(MyColors.primary)
                                 
                 Divider()
-                
-                VStack(alignment: .leading, spacing: 16) {
+                    .background(MyColors.primary)
+
+                VStack(alignment: .leading, spacing: MySpacings.medium) {
                     
                     Text("Favoritos")
+                        .foregroundStyle(MyColors.primary)
                         .font(.headline)
                         .fontWeight(.bold)
                         .kerning(1)
                     
                     ScrollView {
-                        LazyVGrid(columns: columns, spacing: 16) {
+                        LazyVGrid(columns: columns, spacing: MySpacings.medium) {
                             ForEach(favorites, id: \.self.id) { favorite in
                                 let pokemon = ListedPokemon(name: favorite.name, url: favorite.url)
                                 NavigationLink(
@@ -74,7 +77,7 @@ struct FavoritesView: View {
                     
                 }
             }
-            .padding(.horizontal, 24)
+            .padding(.horizontal, MySpacings.big)
         }
     }
 }

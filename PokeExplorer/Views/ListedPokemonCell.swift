@@ -24,15 +24,9 @@ struct ListedPokemonCell: View {
             
             Text(pokemon.name.capitalized)
                 .font(.body.bold())
-                .foregroundColor(.primary)
+                .foregroundColor(MyColors.primary)
                 .multilineTextAlignment(.center)
                 .lineLimit(1)
-            
-//            Text(pokemon.id.formatted())
-//                .font(.subheadline)
-//                .foregroundColor(.secondary)
-//                .multilineTextAlignment(.center)
-//                .lineLimit(1)
         }
         .frame(maxWidth: .infinity)
     }

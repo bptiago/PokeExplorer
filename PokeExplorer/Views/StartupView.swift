@@ -16,7 +16,7 @@ struct StartupView: View {
             Color.black
                 .ignoresSafeArea()
             
-            VStack(spacing: 16) {
+            VStack(spacing: MySpacings.medium) {
                 Spacer()
                     .frame(height: 560)
                 
@@ -28,7 +28,7 @@ struct StartupView: View {
                     Text("Junte-se a nós")
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, maxHeight: 50)
-                        .background(Color.accentColor)
+                        .background(MyColors.filledButton)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
@@ -43,7 +43,7 @@ struct StartupView: View {
                     } label: {
                         Text("Entre aqui")
                             .fontWeight(.semibold)
-                            .foregroundStyle(Color.accentColor)
+                            .foregroundStyle(MyColors.accent)
                     }
                 }
                 .font(.subheadline)
@@ -72,7 +72,7 @@ struct StartupView: View {
                     .preferredColorScheme(.dark)
             })
             
-            .padding(.horizontal, 24)
+            .padding(.horizontal, MySpacings.big)
         }
     }
 }

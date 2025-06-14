@@ -18,19 +18,18 @@ struct SearchView: View {
     
     var body: some View {
         NavigationStack {
-            VStack (alignment: .leading, spacing: 24) {
+            VStack (alignment: .leading, spacing: MySpacings.big) {
                     
                 Text("PokeExplorer")
                     .font(.largeTitle.bold())
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(MyColors.primary)
                 
-                Text("Procure por um Pokémon por meio de seu nome ou pelo seu número oficial na Pokédex.")
+                Text("Procure por Pokémons e divirta-se! Quem sabe você não encontra seus favoritos?")
                     .font(.body)
-                    .foregroundStyle(.secondary)
-            
+                    .foregroundStyle(MyColors.secondary)
                 
                 ScrollView {
-                    LazyVGrid(columns: columns, spacing: 16) {
+                    LazyVGrid(columns: columns, spacing: MySpacings.medium) {
                         ForEach(viewModel.pokemons, id: \.self.name) { pokemon in
                             NavigationLink(
                                 destination: PokemonDetailsView(url: pokemon.url)) {
@@ -47,24 +46,17 @@ struct SearchView: View {
                         Text("Carregar mais")
                             .padding()
                             .frame(maxWidth: .infinity)
-                            .foregroundStyle(.white)
-                            .background(Color.accentColor)
+                            .foregroundStyle(MyColors.primary)
+                            .background(MyColors.accent)
                             .clipShape(.buttonBorder)
                     }
-                    .padding(.top, 24)
-                
+                    .padding(.top, MySpacings.big)
                 }
                 .task {
                     await viewModel.getPokemons()
                 }
             }
-            .padding(.horizontal, 24)
-            // Expandir a tela para que o usuário reconheça mais facilmente que há uma VGrid scrollabel
-            .onAppear() {
-                for i in favorites {
-                    print(i.id)
-                }
-            }
+            .padding(.horizontal, MySpacings.big)
         }
     }
 }
