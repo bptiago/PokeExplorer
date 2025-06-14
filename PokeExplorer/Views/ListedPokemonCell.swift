@@ -17,9 +17,10 @@ struct ListedPokemonCell: View {
                 image.resizable()
                     .resizable()
                     .aspectRatio(1, contentMode: .fit)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
             } placeholder: {
-                ProgressView()
+                Image("pokeball")
+                    .resizable()
+                    .aspectRatio(1, contentMode: .fit)
             }
             
             Text(pokemon.name.capitalized)

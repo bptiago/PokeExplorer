@@ -42,8 +42,20 @@ struct PokemonDetailsView: View {
                     isFavorite ? removeSavedPokemon(pokemon.id) : savePokemon(pokemon: pokemon)
                     isFavorite.toggle()
                 } label: {
-                    Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .foregroundStyle(.red)
+                    HStack(alignment: .center, spacing: MySpacings.small) {
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            .foregroundStyle(MyColors.primary)
+                            .font(.subheadline)
+                        
+                        Text("Favoritar")
+                            .foregroundStyle(MyColors.primary)
+                            .font(.subheadline)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(isFavorite ? .red : MyColors.secondary.opacity(0.2))
+                    .clipShape(.capsule)
+                    
                 }
                 
                 HStack(alignment: .center, spacing: 10) {

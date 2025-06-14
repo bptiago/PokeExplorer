@@ -13,7 +13,8 @@ struct StartupView: View {
     
     var body: some View {
         ZStack {
-            Color.black
+            Image("background")
+                .resizable()
                 .ignoresSafeArea()
             
             VStack(spacing: MySpacings.medium) {

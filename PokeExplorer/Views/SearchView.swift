@@ -50,7 +50,7 @@ struct SearchView: View {
                             .background(MyColors.accent)
                             .clipShape(.buttonBorder)
                     }
-                    .padding(.top, MySpacings.big)
+                    .padding(.top, MySpacings.bigger)
                 }
                 .task {
                     await viewModel.getPokemons()

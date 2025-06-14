@@ -16,6 +16,7 @@ struct FavoritesView: View {
     let columns = [GridItem(.adaptive(minimum: 160), spacing: 18)]
     
     var body: some View {
+        
         NavigationStack {
             VStack (alignment: .leading, spacing: MySpacings.bigger) {
                 
@@ -40,7 +41,7 @@ struct FavoritesView: View {
                         }
                     } label: {
                         Image(systemName: "rectangle.portrait.and.arrow.right")
-                            .foregroundStyle(MyColors.secondary)
+                            .foregroundStyle(MyColors.accent)
                             .font(.headline)
                             .offset(y: 8)
                     }
@@ -51,10 +52,10 @@ struct FavoritesView: View {
                     .font(.body)
                     .fontWeight(.light)
                     .foregroundStyle(MyColors.primary)
-                                
+                
                 Divider()
                     .background(MyColors.primary)
-
+                
                 VStack(alignment: .leading, spacing: MySpacings.medium) {
                     
                     Text("Favoritos")
@@ -63,22 +64,33 @@ struct FavoritesView: View {
                         .fontWeight(.bold)
                         .kerning(1)
                     
-                    ScrollView {
-                        LazyVGrid(columns: columns, spacing: MySpacings.medium) {
-                            ForEach(favorites, id: \.self.id) { favorite in
-                                let pokemon = ListedPokemon(name: favorite.name, url: favorite.url)
-                                NavigationLink(
-                                    destination: PokemonDetailsView(url: pokemon.url)) {
-                                        ListedPokemonCell(pokemon: pokemon)
-                                    }
+                    if favorites.isEmpty {
+                        Text("Nenhum favorito ainda...")
+                            .font(.subheadline)
+                            .foregroundStyle(MyColors.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.top, MySpacings.medium)
+                        
+                        Spacer()
+                    } else {
+                        
+                        ScrollView {
+                            LazyVGrid(columns: columns, spacing: MySpacings.medium) {
+                                ForEach(favorites, id: \.self.id) { favorite in
+                                    let pokemon = ListedPokemon(name: favorite.name, url: favorite.url)
+                                    NavigationLink(
+                                        destination: PokemonDetailsView(url: pokemon.url)) {
+                                            ListedPokemonCell(pokemon: pokemon)
+                                        }
+                                }
                             }
                         }
+                        
                     }
-                    
                 }
             }
-            .padding(.horizontal, MySpacings.big)
         }
+        .padding(.horizontal, MySpacings.big)
     }
 }
 
