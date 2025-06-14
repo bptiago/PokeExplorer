@@ -197,6 +197,7 @@ struct PokemonDetailsView: View {
     func savePokemon(pokemon: PokemonResponse) {
         let favorite = Favorito(id: pokemon.id, name: pokemon.name, url: url)
         modelContext.insert(favorite)
+        try? modelContext.save()
     }
     
     func removeSavedPokemon(_ id: Int) {
@@ -204,6 +205,7 @@ struct PokemonDetailsView: View {
             return
         }
         modelContext.delete(favorite)
+        try? modelContext.save()
     }
 }
 

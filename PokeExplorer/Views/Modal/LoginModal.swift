@@ -122,7 +122,6 @@ struct LoginModal: View {
             }
             
             Button(action: {
-                // Passar essa lógica pro viewmodel
                 withAnimation {
                     if !viewModel.isValidEmail(viewModel.email) {
                         viewModel.isEmailInvalid = true

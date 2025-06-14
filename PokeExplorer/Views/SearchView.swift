@@ -52,9 +52,9 @@ struct SearchView: View {
                     }
                     .padding(.top, MySpacings.bigger)
                 }
-                .task {
-                    await viewModel.getPokemons()
-                }
+            }
+            .task {
+                await viewModel.getPokemons()
             }
             .padding(.horizontal, MySpacings.big)
         }

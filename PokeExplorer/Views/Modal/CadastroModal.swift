@@ -195,7 +195,6 @@ struct CadastroModal: View {
             
             Button(action: {
                 withAnimation {
-                    // mudar essa lógica pro viewModel
                     if viewModel.username.count < 3 {
                         viewModel.isUsernameInvalid = true
                     } else if !viewModel.isValidEmail(viewModel.email) {
@@ -210,11 +209,10 @@ struct CadastroModal: View {
                         viewModel.isPasswordInvalid = false
                         viewModel.isPasswordsDifferent = false
                         isPresentingCadastro = false
-                                                
-                        let user = Usuario(username: viewModel.username, email: viewModel.email.lowercased(), senha: viewModel.password)
-                        modelContext.insert(user)
-                                                
+                                          
                         isPresentingLogin = true
+
+                        insertUser()
                     }
                 }
                 
@@ -255,5 +253,11 @@ struct CadastroModal: View {
         }
         .padding(.horizontal, MySpacings.big)
         .padding(.vertical, MySpacings.bigger)
+    }
+    
+    func insertUser() {
+        let user = Usuario(username: viewModel.username, email: viewModel.email.lowercased(), senha: viewModel.password)
+        modelContext.insert(user)
+        try? modelContext.save()
     }
 }
