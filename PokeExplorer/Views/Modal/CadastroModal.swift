@@ -8,100 +8,61 @@
 // TODO: EMAIL JÁ EXISTE, COLORAÇÃO E UI
 
 import SwiftUI
+import SwiftData
 
 struct CadastroModal: View {
+    @Environment(\.modelContext) var modelContext
+    @Query private var users: [Usuario]
     
-    @Environment(\.modelContext) private var modelContext
+    @StateObject var viewModel = CadastroViewModel()
     
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
-    @Binding var appState: AppState
-    
-    @State private var username: String = ""
-    
-    @State private var email: String = ""
-    
-    @State private var password: String = ""
-    @State private var confirmPassword: String = ""
-    
-    @State private var isUsernameInvalid = false
-    @State private var isEmailInvalid = false
-    @State private var isPasswordInvalid = false
-    @State private var isPasswordsDifferent = false
-    
-    func isValidEmail(_ email: String) -> Bool {
-        let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
-        return emailPredicate.evaluate(with: email)
-    }
-    
-    func isValidPassword(_ password: String) -> Bool {
-        if password.count < 6 {
-            return false
-        }
-        
-        let uppercaseRegex = ".*[A-Z].*"
-        let uppercasePredicate = NSPredicate(format: "SELF MATCHES %@", uppercaseRegex)
-        if !uppercasePredicate.evaluate(with: password) {
-            return false
-        }
-        
-        let symbolRegex = ".*[!@#$%^&*()\\-_=+\\[{\\]};:'\"<,>.\\/?`~].*"
-        let symbolPredicate = NSPredicate(format: "SELF MATCHES %@", symbolRegex)
-        if !symbolPredicate.evaluate(with: password) {
-            return false
-        }
-        
-        return true
-    }
-    
-    private var canContinue: Bool {
-        !username.isEmpty && !email.isEmpty && !password.isEmpty && !confirmPassword.isEmpty
-    }
     
     var body: some View {
-        VStack(alignment: .center, spacing: 32) {
+        VStack(alignment: .center, spacing: MySpacings.bigger) {
             Text("Junte-se a nós!")
                 .font(.title.bold())
+                .foregroundStyle(MyColors.primary)
             
             VStack() {
                 Form {
                     Section {
                         VStack {
                             TextField("",
-                                      text: $username,
+                                      text: $viewModel.username,
                                       prompt: Text("Insira seu nome de usuário")
                                 .font(.body)
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 24)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        isUsernameInvalid ? .red : .clear,
+                                        viewModel.isUsernameInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
                             .textContentType(.password)
                             
-                            if isUsernameInvalid {
+                            if viewModel.isUsernameInvalid {
                                 HStack {
                                     Image(systemName: "exclamationmark.triangle")
                                     Text("Nome de usuário precisa ter pelo menos 3 caracteres")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("Nome de usuário")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -110,39 +71,40 @@ struct CadastroModal: View {
                     Section {
                         VStack {
                             TextField("",
-                                      text: $email,
+                                      text: $viewModel.email,
                                       prompt: Text("Insira seu e-mail")
                                 .font(.body)
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(MyColors.secondary)
                             )
+                            .textInputAutocapitalization(.never)
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 24)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        isEmailInvalid ? .red : .clear,
+                                        viewModel.isEmailInvalid ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
                             .textContentType(.password)
                             
-                            if isEmailInvalid {
+                            if viewModel.isEmailInvalid {
                                 HStack {
                                     Image(systemName: "exclamationmark.triangle")
                                     Text("Formato de e-mail inválido. Tente novamente")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("E-mail")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -151,32 +113,32 @@ struct CadastroModal: View {
                     Section {
                         VStack {
                             SecureField("",
-                                        text: $password,
+                                        text: $viewModel.password,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 24)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        isPasswordsDifferent ? .red : .clear,
+                                        viewModel.isPasswordsDifferent ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
                             .textContentType(.password)
                             
-                            if isPasswordInvalid || isPasswordsDifferent {
+                            if viewModel.isPasswordInvalid || viewModel.isPasswordsDifferent {
                                 HStack {
                                     Image(systemName: "exclamationmark.triangle")
-                                    Text(isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
+                                    Text(viewModel.isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             
@@ -184,7 +146,7 @@ struct CadastroModal: View {
                     } header: {
                         Text("Senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -193,39 +155,39 @@ struct CadastroModal: View {
                     Section {
                         VStack {
                             SecureField("",
-                                        text: $confirmPassword,
+                                        text: $viewModel.confirmPassword,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
                             .overlay {
-                                RoundedRectangle(cornerRadius: 24)
+                                RoundedRectangle(cornerRadius: 8)
                                     .stroke(
-                                        isPasswordsDifferent ? .red : .clear,
+                                        viewModel.isPasswordsDifferent ? MyColors.warning : .clear,
                                         lineWidth: 1
                                     )
                             }
                             .textContentType(.password)
                             
-                            if isPasswordsDifferent {
+                            if viewModel.isPasswordsDifferent {
                                 HStack {
                                     Image(systemName: "exclamationmark.triangle")
                                     Text("Senhas incompatíveis. Por favor, tente novamente.")
                                 }
                                 .font(.footnote)
-                                .foregroundStyle(.red)
+                                .foregroundStyle(MyColors.warning)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         }
                     } header: {
                         Text("Confirmar senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                 }
                 .formStyle(.columns)
@@ -233,45 +195,42 @@ struct CadastroModal: View {
             
             Button(action: {
                 withAnimation {
-                    if username.count < 3 {
-                        isUsernameInvalid = true
-                    } else if !isValidEmail(email) {
-                        isEmailInvalid = true
-                    } else if !isValidPassword(password) {
-                        isPasswordInvalid = true
-                    } else if password != confirmPassword {
-                        isPasswordsDifferent = true
+                    if viewModel.username.count < 3 {
+                        viewModel.isUsernameInvalid = true
+                    } else if !viewModel.isValidEmail(viewModel.email) {
+                        viewModel.isEmailInvalid = true
+                    } else if !viewModel.isValidPassword(viewModel.password) {
+                        viewModel.isPasswordInvalid = true
+                    } else if viewModel.password != viewModel.confirmPassword {
+                        viewModel.isPasswordsDifferent = true
                     } else {
-                        isUsernameInvalid = false
-                        isEmailInvalid = false
-                        isPasswordInvalid = false
-                        isPasswordsDifferent = false
+                        viewModel.isUsernameInvalid = false
+                        viewModel.isEmailInvalid = false
+                        viewModel.isPasswordInvalid = false
+                        viewModel.isPasswordsDifferent = false
                         isPresentingCadastro = false
-                        
+                                          
+                        isPresentingLogin = true
+
                         insertUser()
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            withAnimation(.easeInOut) {
-                                appState = .navegacao
-                            }
-                        }
                     }
                 }
                 
             }) {
-                Text("Entre no CineFilés")
+                Text("Criar conta")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(MyColors.primary)
                     .background(
-                        canContinue ? .blue : .gray
+                        viewModel.canContinue ? MyColors.accent : MyColors.disabledButton
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .clipShape(.buttonBorder)
             }
-            .disabled(!canContinue)
+            .disabled(!viewModel.canContinue)
             
             HStack (spacing: 4) {
                 Text("Já tem uma conta?")
+                    .foregroundStyle(MyColors.primary)
                 
                 Button {
                     withAnimation {
@@ -285,19 +244,20 @@ struct CadastroModal: View {
                     }
                 } label: {
                     Text("Entre aqui")
-                        .foregroundStyle(.red)
+                        .foregroundStyle(MyColors.accent)
                         .fontWeight(.semibold)
                 }
             }
             .font(.subheadline)
             
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 32)
+        .padding(.horizontal, MySpacings.big)
+        .padding(.vertical, MySpacings.bigger)
     }
     
-    private func insertUser() {
-        let user = Usuario(username: username, email: email, senha: password)
+    func insertUser() {
+        let user = Usuario(username: viewModel.username, email: viewModel.email.lowercased(), senha: viewModel.password)
         modelContext.insert(user)
+        try? modelContext.save()
     }
 }

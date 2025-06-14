@@ -13,6 +13,7 @@ struct PokeExplorerApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Usuario.self,
+            Favorito.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -22,10 +23,13 @@ struct PokeExplorerApp: App {
             fatalError("Could not create ModelContainer: \(error)")
         }
     }()
+    
+    @StateObject private var appInfo = AppInfo()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(appInfo)
         }
         .modelContainer(sharedModelContainer)
     }

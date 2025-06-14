@@ -7,23 +7,17 @@
 
 import SwiftUI
 import SwiftData
-
-enum AppState {
-    case inicio
-    case navegacao
-}
-
 import SwiftUI
 
 struct ContentView: View {
-    @State private var appState: AppState = .inicio
+    @EnvironmentObject var appInfo: AppInfo
         
     var body: some View {
-        switch appState {
+        switch appInfo.appState {
         case .inicio:
-            StartupView(appState: $appState)
+            StartupView()
         case .navegacao:
-            VStack{}
+            NavigationView()
         }
     }
 }

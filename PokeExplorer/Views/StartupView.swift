@@ -7,18 +7,17 @@
 
 import SwiftUI
 
-struct StartupView: View {
-    @Binding var appState: AppState;
-        
+struct StartupView: View {        
     @State private var isPresentingLogin = false
     @State private var isPresentingCadastro = false
     
     var body: some View {
         ZStack {
-            Color.black
+            Image("background")
+                .resizable()
                 .ignoresSafeArea()
             
-            VStack(spacing: 16) {
+            VStack(spacing: MySpacings.medium) {
                 Spacer()
                     .frame(height: 560)
                 
@@ -30,7 +29,7 @@ struct StartupView: View {
                     Text("Junte-se a nós")
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, maxHeight: 50)
-                        .background(Color.accentColor)
+                        .background(MyColors.filledButton)
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
                 
@@ -45,7 +44,7 @@ struct StartupView: View {
                     } label: {
                         Text("Entre aqui")
                             .fontWeight(.semibold)
-                            .foregroundStyle(Color.accentColor)
+                            .foregroundStyle(MyColors.accent)
                     }
                 }
                 .font(.subheadline)
@@ -53,8 +52,7 @@ struct StartupView: View {
             .sheet(isPresented: $isPresentingLogin) {
                 LoginModal(
                     isPresentingLogin: $isPresentingLogin,
-                    isPresentingCadastro: $isPresentingCadastro,
-                    appState: $appState
+                    isPresentingCadastro: $isPresentingCadastro
                 )
                     .presentationDetents([
                         .height(500)
@@ -66,8 +64,7 @@ struct StartupView: View {
             .sheet(isPresented: $isPresentingCadastro, content: {
                 CadastroModal(
                     isPresentingLogin: $isPresentingLogin,
-                    isPresentingCadastro: $isPresentingCadastro,
-                    appState: $appState
+                    isPresentingCadastro: $isPresentingCadastro
                 )
                     .presentationDetents([
                         .height(700)
@@ -76,7 +73,7 @@ struct StartupView: View {
                     .preferredColorScheme(.dark)
             })
             
-            .padding(.horizontal, 24)
+            .padding(.horizontal, MySpacings.big)
         }
     }
 }

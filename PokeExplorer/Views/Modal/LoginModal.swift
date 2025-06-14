@@ -6,42 +6,64 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LoginModal: View {
+    @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var appInfo: AppInfo
+        
+    @Query private var usuarios: [Usuario]
+    
     @Binding var isPresentingLogin: Bool
     @Binding var isPresentingCadastro: Bool
-    @Binding var appState: AppState
     
-    @State private var email: String = ""
-    @State private var senha: String = ""
-        
-    private var canContinue: Bool {
-        !email.isEmpty && !senha.isEmpty
-    }
+    @ObservedObject var viewModel = LoginViewModel()
     
     var body: some View {
-        VStack(alignment: .center, spacing: 32) {
-            Text("Bem-vindo de volta!")
+        VStack(alignment: .center, spacing: MySpacings.bigger) {
+            Text("Faça seu login!")
                 .font(.title.bold())
+                .foregroundStyle(MyColors.primary)
             
             VStack() {
                 Form {
                     Section {
-                        TextField("",
-                                  text: $email,
-                                  prompt: Text("Insira seu e-mail")
+                        VStack {
+                            TextField("",
+                                      text: $viewModel.email,
+                                      prompt: Text("Insira seu e-mail")
+                                .font(.body)
+                                .foregroundStyle(MyColors.secondary)
+                            )
+                            .textInputAutocapitalization(.never)
+                            .padding(12)
+                            .foregroundStyle(.black)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .foregroundStyle(.gray)
-                        )
-                        .padding(12)
-                        .background(.white)
-                        .foregroundStyle(.black)
-                        .font(.body)
-                        .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        viewModel.isEmailInvalid ? MyColors.warning : .clear,
+                                        lineWidth: 1
+                                    )
+                            }
+                            .textContentType(.password)
+                            
+                            if viewModel.isEmailInvalid {
+                                HStack {
+                                    Image(systemName: "exclamationmark.triangle")
+                                    Text("Formato de e-mail inválido. Tente novamente")
+                                }
+                                .font(.footnote)
+                                .foregroundStyle(MyColors.warning)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        }
                     } header: {
                         Text("E-mail")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
                     }
                     
                     Spacer()
@@ -50,22 +72,50 @@ struct LoginModal: View {
                     Section {
                         VStack {
                             SecureField("",
-                                        text: $senha,
+                                        text: $viewModel.password,
                                         prompt: Text("Insira sua senha")
                                 .font(.body)
-                                .foregroundStyle(.gray)
+                                .foregroundStyle(MyColors.secondary)
                             )
                             .padding(12)
                             .foregroundStyle(.black)
-                            .background(.white)
+                            .background(MyColors.primary)
                             .font(.body)
-                            .clipShape(.capsule)
+                            .clipShape(.buttonBorder)
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .stroke(
+                                        viewModel.isPasswordInvalid ? MyColors.warning : .clear,
+                                        lineWidth: 1
+                                    )
+                            }
                             .textContentType(.password)
+                            
+                            if viewModel.isPasswordInvalid {
+                                HStack {
+                                    Image(systemName: "exclamationmark.triangle")
+                                    Text(viewModel.isPasswordInvalid ? "Senha inválida. Deve conter no mínimo 6 caracteres, uma letra maiúscula e um símbolo" : "Senhas incompatíveis. Por favor, tente novamente.")
+                                }
+                                .font(.footnote)
+                                .foregroundStyle(MyColors.warning)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                            
                         }
                     } header: {
                         Text("Senha")
                             .font(.headline.bold())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(MyColors.primary)
+                    }
+                    
+                    if viewModel.isUserUnregistered {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle")
+                            Text("Usuário não encontrado. Tente novamente")
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(MyColors.warning)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
                 .formStyle(.columns)
@@ -73,52 +123,80 @@ struct LoginModal: View {
             
             Button(action: {
                 withAnimation {
-                    isPresentingLogin = false
-                }
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    withAnimation(.easeInOut) {
-                        appState = .navegacao
+                    if !viewModel.isValidEmail(viewModel.email) {
+                        viewModel.isEmailInvalid = true
+                    } else if !viewModel.isValidPassword(viewModel.password) {
+                        viewModel.isPasswordInvalid = true
+                    } else {
+                        viewModel.isEmailInvalid = false
+                        viewModel.isPasswordInvalid = false
+                        isPresentingCadastro = false
+                        
+                        guard let user = findUser(email: viewModel.email.lowercased(), password: viewModel.password) else {
+                            viewModel.isUserUnregistered = true
+                            return
+                        }
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            withAnimation(.easeInOut) {
+                                appInfo.loggedUser = user
+                                appInfo.appState = .navegacao
+                            }
+                        }
                     }
                 }
                 
             }) {
-                Text("Login")
+                Text("Entrar")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
-                    .foregroundStyle(
-                        .white
-                    )
+                    .foregroundStyle(MyColors.primary)
                     .background(
-                        canContinue ? .blue : .gray
+                        viewModel.canContinue ? MyColors.accent : MyColors.disabledButton
                     )
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .clipShape(.buttonBorder)
             }
-            .disabled(!canContinue)
+            .disabled(!viewModel.canContinue)
             
             HStack (spacing: 4) {
-                Text("Não tem uma conta?")
+                Text("Não possui uma conta?")
+                    .foregroundStyle(MyColors.primary)
                 
                 Button {
                     withAnimation {
                         isPresentingLogin = false
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         withAnimation(.easeInOut) {
                             isPresentingCadastro = true
                         }
                     }
                 } label: {
                     Text("Crie agora")
-                        .foregroundStyle(.yellow)
+                        .foregroundStyle(MyColors.accent)
                         .fontWeight(.semibold)
                 }
             }
             .font(.subheadline)
             
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 32)
+        .padding(.horizontal, MySpacings.big)
+        .padding(.vertical, MySpacings.bigger)
+    }
+
+    func findUser(email: String, password: String) -> Usuario? {
+        let predicate = #Predicate<Usuario> { user in
+            user.email == email && user.senha == password
+        }
+        var descriptor = FetchDescriptor<Usuario>(predicate: predicate)
+        descriptor.fetchLimit = 1
+        do {
+            let users = try modelContext.fetch(descriptor)
+            return users.first
+        } catch {
+            print("Error fetching user by email: \(error)")
+            return nil
+        }
     }
 }
