@@ -27,13 +27,6 @@ struct SearchView: View {
                 Text("Procure por um Pokémon por meio de seu nome ou pelo seu número oficial na Pokédex.")
                     .font(.body)
                     .foregroundStyle(.secondary)
-                
-                TextField("Buscar...", text: $viewModel.searchText)
-                    .padding(12)
-                    .background(Color(.tertiarySystemFill))
-                    .cornerRadius(10)
-                    .font(.body)
-                    .clipShape(.buttonBorder)
             
                 
                 ScrollView {
@@ -46,13 +39,26 @@ struct SearchView: View {
                         }
                     }
                     
-                    // Botão de carregar mais
+                    Button {
+                        Task {
+                            await viewModel.getPokemons()
+                        }
+                    } label: {
+                        Text("Carregar mais")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .foregroundStyle(.white)
+                            .background(Color.accentColor)
+                            .clipShape(.buttonBorder)
+                    }
+                    .padding(.top, 24)
+                
                 }
                 .task {
                     await viewModel.getPokemons()
                 }
             }
-            .padding()
+            .padding(.horizontal, 24)
             // Expandir a tela para que o usuário reconheça mais facilmente que há uma VGrid scrollabel
             .onAppear() {
                 for i in favorites {

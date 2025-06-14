@@ -15,4 +15,11 @@ enum AppState {
 class AppInfo: ObservableObject {
     @Published var loggedUser: Usuario? = nil
     @Published var appState: AppState = .inicio
+    
+    func logout() {
+        appState = .inicio
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.loggedUser = nil
+        }
+    }
 }

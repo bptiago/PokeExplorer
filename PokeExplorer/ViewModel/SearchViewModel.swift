@@ -9,12 +9,13 @@ import Foundation
 
 class SearchViewModel: ObservableObject {
     @Published var pokemons: [ListedPokemon] = []
-    @Published var searchText: String = ""
+    private var offset = 0
+    private var limit = 8
     
     // Função de filtrar por nome dps
     
     func getPokemons() async {
-        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=8") else {
+        guard let url = URL(string: "https://pokeapi.co/api/v2/pokemon?limit=\(limit)&offset=\(offset)") else {
             print("Invalid URL")
             return
         }
@@ -23,9 +24,12 @@ class SearchViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decoder = JSONDecoder()
             let response = try decoder.decode(ListedPokemonResponse.self, from: data)
+            
             DispatchQueue.main.async {
-                self.pokemons = response.results
+                self.pokemons.append(contentsOf: response.results)
+                self.offset += self.limit
             }
+            
             
         } catch {
             print("Error: \(error.localizedDescription)")
