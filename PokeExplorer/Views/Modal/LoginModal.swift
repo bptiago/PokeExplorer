@@ -21,7 +21,7 @@ struct LoginModal: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: MySpacings.bigger) {
-            Text("Junte-se a nós!")
+            Text("Faça seu login!")
                 .font(.title.bold())
                 .foregroundStyle(MyColors.primary)
             
@@ -147,7 +147,7 @@ struct LoginModal: View {
                 }
                 
             }) {
-                Text("Entre no CineFilés")
+                Text("Entrar")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(MyColors.primary)

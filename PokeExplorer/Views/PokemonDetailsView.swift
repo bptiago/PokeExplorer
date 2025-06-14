@@ -87,7 +87,7 @@ struct PokemonDetailsView: View {
                             .lineSpacing(5)
                             .foregroundStyle(MyColors.primary)
                         
-                        Text("Weight")
+                        Text("Peso")
                             .textCase(.uppercase)
                             .foregroundStyle(MyColors.secondary)
                             .font(.body)
@@ -99,13 +99,13 @@ struct PokemonDetailsView: View {
                         .background(MyColors.primary)
 
                     VStack (spacing: MySpacings.small) {
-                        Text(pokemon.types.first?.type.name.capitalized ?? "Unknown")
+                        Text(pokemon.types.first?.type.name.capitalized ?? "Desconhecido")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .lineSpacing(5)
                             .foregroundStyle(MyColors.primary)
                         
-                        Text("Type")
+                        Text("Tipo")
                             .textCase(.uppercase)
                             .foregroundStyle(MyColors.secondary)
                             .font(.body)
@@ -124,7 +124,7 @@ struct PokemonDetailsView: View {
                             .lineSpacing(5)
                             .foregroundStyle(MyColors.primary)
                         
-                        Text("Height")
+                        Text("Altura")
                             .textCase(.uppercase)
                             .foregroundStyle(MyColors.secondary)
                             .font(.body)
@@ -138,7 +138,7 @@ struct PokemonDetailsView: View {
                     .background(MyColors.primary)
                 
                 HStack(alignment: .top) {
-                    Text("Moves")
+                    Text("Movimentos")
                         .foregroundStyle(MyColors.secondary)
                         .frame(width: 100, alignment: .leading)
                     
@@ -153,7 +153,7 @@ struct PokemonDetailsView: View {
                 }
                 
                 HStack(alignment: .top) {
-                    Text("Abilities")
+                    Text("Habilidades")
                         .foregroundStyle(MyColors.secondary)
                         .frame(width: 100, alignment: .leading)
                     

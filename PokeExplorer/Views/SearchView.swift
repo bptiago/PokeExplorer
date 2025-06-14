@@ -20,7 +20,7 @@ struct SearchView: View {
         NavigationStack {
             VStack (alignment: .leading, spacing: MySpacings.big) {
                     
-                Text("PokeExplorer")
+                Text("PokéExplorer")
                     .font(.largeTitle.bold())
                     .foregroundStyle(MyColors.primary)
                 

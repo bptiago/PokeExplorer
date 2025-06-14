@@ -217,7 +217,7 @@ struct CadastroModal: View {
                 }
                 
             }) {
-                Text("Entre no CineFilés")
+                Text("Criar conta")
                     .frame(height: 50)
                     .frame(maxWidth: .infinity)
                     .foregroundStyle(MyColors.primary)

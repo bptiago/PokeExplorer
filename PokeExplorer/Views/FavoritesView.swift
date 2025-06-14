@@ -22,7 +22,7 @@ struct FavoritesView: View {
                 
                 HStack(alignment: .top) {
                     VStack(alignment: .leading) {
-                        Text("Hello, \(appInfo.loggedUser!.username.capitalized)!")
+                        Text("Olá, \(appInfo.loggedUser!.username.capitalized)!")
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundStyle(MyColors.primary)
