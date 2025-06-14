@@ -118,7 +118,7 @@ struct PokemonDetailsView: View {
                         .background(MyColors.primary)
 
                     VStack (spacing: MySpacings.small) {
-                        Text(String(format: "%.2f", Float(pokemon.height) / 100) + "m")
+                        Text(String(format: "%.2f", Float(pokemon.height) / 10) + "m")
                             .font(.title3)
                             .fontWeight(.semibold)
                             .lineSpacing(5)
