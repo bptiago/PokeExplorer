@@ -7,7 +7,7 @@ O PokéExplorer é um aplicativo iOS que permite explorar uma lista completa de 
 Projeto realizado por: Bernardo Jakubiak, Danilo Garabetti, Henrique Grigoli e Tiago Prestes
 
 - Documentação via README.md
-- Vídeo demonstrativo: <a href="">YouTube</a>
+- Vídeo demonstrativo: <a href="https://youtu.be/gvSunYM-lsE">YouTube</a>
 
 ## Funcionalidades
 
