@@ -11,7 +11,7 @@ Projeto realizado por: Bernardo Jakubiak, Danilo Garabetti, Henrique Grigoli e T
 
 ## Funcionalidades
 
-- Chamadas via `PokeAPI` com sistema de paginação
+- Chamadas via `PokeAPI` com sistema de paginação (item de criatividade)
 - Persistência de dados locais via `SwiftData`
 - Cadastro e autenticação de usuário
 - Visualização e opção de favoritar Pokémons
